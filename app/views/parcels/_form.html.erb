@@ -12,39 +12,39 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :weight %>
+    <%= form.label :weight, 'Weight *' %>
     <%= form.text_field :weight %>
   </div>
 
   <div class="field">
-    <%= form.label :status %>
-    <%= form.select :status, Parcel::STATUS %>
+    <%= form.label :status, 'Status *' %>
+    <%= form.select :status, Parcel::STATUS, {:include_blank => 'select a status'} %>
   </div>
 
   <div class="field">
-    <%= form.label :service_type_id %>
-    <%= form.select :service_type_id, @service_types %>
+    <%= form.label :service_type_id, 'Service Type *' %>
+    <%= form.select :service_type_id, @service_types, {:include_blank => 'select a service type'} %>
   </div>
 
   <div class="field">
-    <%= form.label :payment_mode %>
-    <%= form.select :payment_mode, Parcel::PAYMENT_MODE %>
+    <%= form.label :payment_mode, 'Payment Mode *' %>
+    <%= form.select :payment_mode, Parcel::PAYMENT_MODE, {:include_blank => 'select a payment mode'} %>
   </div>
 
   <div class="field">
-    <%= form.label :sender_id %>
-    <%= form.select :sender_id, @users %>
+    <%= form.label :sender_id, 'Sender *' %>
+    <%= form.select :sender_id, @users, {:include_blank => 'select a sender'} %>
     <%= link_to 'New Sender', new_user_path %>
   </div>
 
   <div class="field">
-    <%= form.label :receiver_id %>
-    <%= form.select :receiver_id, @users %>
+    <%= form.label :receiver_id, 'Receiver *' %>
+    <%= form.select :receiver_id, @users, {:include_blank => 'select a receiver'}%>
     <%= link_to 'New Receiver', new_user_path %>
   </div>
 
   <div class="field">
-    <%= form.label :cost %>
+    <%= form.label :cost, 'Cost *' %>
     <%= form.text_field :cost %>
   </div>
 

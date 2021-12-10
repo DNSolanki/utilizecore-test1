@@ -4,6 +4,7 @@ class Parcel < ApplicationRecord
 	PAYMENT_MODE = ['COD', 'Prepaid']
 
 	validates :weight, :status, presence: true
+	validates :cost, presence:  true, numericality: true
 	validates :status, inclusion: STATUS
 	validates :payment_mode, inclusion: PAYMENT_MODE
 
@@ -13,10 +14,20 @@ class Parcel < ApplicationRecord
 
 	after_create :send_notification
 
+	#Added New method for insert parcel unique number using for SecureRandom.random_number function
+	# This function generate three digit and concatenate of parcel id.
+    def update_parcel_number!
+    	number = SecureRandom.random_number(1000)
+    	unique_number = "#{number}#{self.id}"
+    	update_column :parcel_number, unique_number
+  	end
+
 	private
 
 	def send_notification
 		UserMailer.with(parcel: self).status_email.deliver_later
 	end
+
+
 
 end

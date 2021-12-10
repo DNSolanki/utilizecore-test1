@@ -1,9 +1,12 @@
 class ParcelsController < ApplicationController
   before_action :set_parcel, only: %i[ show edit update destroy ]
-
+  before_action :get_users, :service_type, only: %i[ new edit]
   # GET /parcels or /parcels.json
   def index
-    @parcels = Parcel.all
+    # Code Added by Dharmendra Solanki
+    # N+1 queries problem
+    @parcels = Parcel.order(id: :desc).includes(:sender, :receiver, :service_type)
+
   end
 
   # GET /parcels/1 or /parcels/1.json
@@ -13,14 +16,11 @@ class ParcelsController < ApplicationController
   # GET /parcels/new
   def new
     @parcel = Parcel.new
-    @users = User.all.map{|user| [user.name_with_address, user.id]}
-    @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]}
+    # Code Added by Dharmendra Solanki
   end
 
   # GET /parcels/1/edit
   def edit
-    @users = User.all.map{|user| [user.name_with_address, user.id]}
-    @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]}
   end
 
   # POST /parcels or /parcels.json
@@ -29,12 +29,16 @@ class ParcelsController < ApplicationController
 
     respond_to do |format|
       if @parcel.save
+         @parcel.update_parcel_number!
         format.html { redirect_to @parcel, notice: 'Parcel was successfully created.' }
         format.json { render :show, status: :created, location: @parcel }
       else
         format.html do
-          @users = User.all.map{|user| [user.name_with_address, user.id]}
-          @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]} 
+          # Code Added by Dharmendra Solanki
+          # Get All User
+          get_users
+          # Get All Service Type
+          service_type
           render :new, status: :unprocessable_entity
         end
         format.json { render json: @parcel.errors, status: :unprocessable_entity }
@@ -68,6 +72,18 @@ class ParcelsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_parcel
       @parcel = Parcel.find(params[:id])
+    end
+
+    # Added new Method 
+    def get_users
+      user_record = User.includes(:address)
+      @users = user_record.map{|user| [user.name_with_address, user.id]}
+    end
+
+    def service_type
+
+      # Replaced map method by pluck method
+      @service_types = ServiceType.pluck(:name, :id)
     end
 
     # Only allow a list of trusted parameters through.
