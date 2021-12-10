@@ -12,6 +12,7 @@ class User < ApplicationRecord
 	def name_with_address
 		# Remove code by Dharmendra Solanki
 		username ||= [name, address.address_line_one, address.city, address.state, 
+
 			address.country, address.pincode].join('-')
 		return "#{username} (Mob. #{address.mobile_number})"
 	end

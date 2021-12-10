@@ -81,9 +81,9 @@ class ParcelsController < ApplicationController
     end
 
     def service_type
-
       # Replaced map method by pluck method
       @service_types = ServiceType.pluck(:name, :id)
+
     end
 
     # Only allow a list of trusted parameters through.
