@@ -1,9 +1,14 @@
 class UsersController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_user, only: %i[ show edit update destroy ]
 
   # GET /users or /users.json
   def index
-    @users = User.all
+    if current_user.present? && current_user.is_admin?
+      @users = User.all
+    else
+      @users = User.where(id: current_user.id).or(User.where(created_by: current_user.id))
+    end
   end
 
   # GET /users/1 or /users/1.json
@@ -21,16 +26,18 @@ class UsersController < ApplicationController
   end
 
   # POST /users or /users.json
-  def create
+  def create_user
     @user = User.new(user_params)
-
     respond_to do |format|
       if @user.save
+        # Added two columns created_by and update_by 
+        @user.created_by = current_user.id
+        @user.updated_by = current_user.id
+        @user.save
+        @user.user_registration_notification(params[:user][:password])
         format.html { redirect_to @user, notice: 'User was successfully created.' }
-        format.json { render :show, status: :created, location: @user }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -39,6 +46,7 @@ class UsersController < ApplicationController
   def update
     respond_to do |format|
       if @user.update(user_params)
+        @user.update_attribute(:updated_by, current_user.id)
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
       else
@@ -65,7 +73,7 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:name, :email, address_attributes: [:address_line_one, :address_line_two,
+      params.require(:user).permit(:name, :email,:role,:password, :password_confirmation, address_attributes: [:address_line_one, :address_line_two,
                                                                        :city, :state, :country,
                                                                        :pincode, :mobile_number])
     end
