@@ -1,0 +1,17 @@
+wb = xlsx_package.workbook
+
+wb.styles do |style|
+  title_center = style.add_style(:alignment => {:horizontal => :center, :vertical => :center, :wrap_text => true}, :b => true )
+
+  wb.add_worksheet(name: "Parcels") do |sheet|
+
+    # Create the header row
+    sheet.add_row ["Parcel Number", "Weight", "Cost","Status", "Service Type", "Payment Mode", "Sender", "Receiver"] , style: title_center 
+    # Create entries for each parcel
+    @parcels.each do |parcel|
+      
+
+      sheet.add_row [parcel.parcel_number, parcel.weight, parcel.cost, parcel.status, parcel.service_type.present? ? parcel.service_type.name : '', parcel.payment_mode, parcel.sender.present? ? parcel.sender.name : '', parcel.receiver.present? ? parcel.receiver.name : '']
+    end
+  end
+end

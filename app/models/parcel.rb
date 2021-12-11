@@ -1,6 +1,6 @@
 class Parcel < ApplicationRecord
 
-	STATUS = ['Sent', 'In Transit', 'Delivered']
+	STATUS = ['New','Sent', 'In Transit', 'Delivered']
 	PAYMENT_MODE = ['COD', 'Prepaid']
 
 	validates :weight, :status, presence: true
@@ -11,12 +11,21 @@ class Parcel < ApplicationRecord
 	belongs_to :sender, class_name: 'User'
 	belongs_to :receiver, class_name: 'User'
 
+	has_many :parcel_histories
+
 	after_create :send_notification
 
-	private
-
-	def send_notification
-		UserMailer.with(parcel: self).status_email.deliver_later
+	# Send change status notification for both user
+	def change_status_notification
+		UserMailer.with(parcel: self).change_status_email.deliver_later
 	end
+
+	private
+		# Send notification after create the parcel for both user
+		def send_notification
+			UserMailer.with(parcel: self).status_email.deliver_later
+		end
+
+
 
 end

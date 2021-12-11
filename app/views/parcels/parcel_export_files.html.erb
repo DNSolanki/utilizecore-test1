@@ -1,0 +1,28 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Export File List</h1>
+
+<br /><br />
+
+<table>
+  <thead>
+    <tr>
+      <th>Number</th>
+      <th>File</th>
+      
+    </tr>
+  </thead>
+
+  <tbody>
+    <% if @contains.present? %>
+      <% @contains.each.with_index(1)  do |file, index| %>
+        <tr>
+          <td><%= index %></td>
+
+            <td><%= link_to file, "parcel_export_files?file_name=#{file}" %></td>
+          
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>

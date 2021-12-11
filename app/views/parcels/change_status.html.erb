@@ -1,0 +1,46 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Parcel Number:</strong>
+  <%= @parcel.parcel_number %>
+</p>
+
+<p>
+  <strong>Current Status:</strong>
+  <%= @parcel.status %>
+</p>
+
+<p>
+  <strong>Sender:</strong>
+  <%= @parcel.sender.name %>
+</p>
+
+<p>
+  <strong>Receiver:</strong>
+  <%= @parcel.receiver.name %>
+</p>
+
+<%= form_with url: "/parcels/update_status/#{@parcel.id}", scope: @parcel do |form| %>
+  <% if @parcel.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@parcel.errors.count, "error") %> prohibited this parcel from being saved:</h2>
+
+      <ul>
+        <% @parcel.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :status, "Current Status *" %>
+    <%= form.select :status, Parcel::STATUS,required: true %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit "Update Status" %>
+  </div>
+<% end %>
+
+<%= link_to 'Back', parcels_path %>

@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Parcel History List</h1>
+
+<br /><br />
+
+<table>
+  <thead>
+    <tr>
+      <th>Parcel Number</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @parcel_history.each do |parcel| %>
+      <tr>
+        <td><%= parcel.parcel_number %></td>
+        <td><%= parcel.status %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Back', parcels_path %>

@@ -1,4 +1,5 @@
 class ServiceTypesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_service_type, only: %i[ show edit update destroy ]
 
   # GET /service_types or /service_types.json

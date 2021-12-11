@@ -28,6 +28,14 @@ gem 'bootsnap', '>= 1.4.4', require: false
 gem 'sidekiq'
 gem 'pg', '~> 1.2', '>= 1.2.3'
 
+gem 'devise'
+
+gem 'rubyzip'
+gem 'axlsx'
+gem 'axlsx_rails'
+
+gem 'whenever', require: false
+gem 'bcrypt-ruby', :require => 'bcrypt' 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

@@ -1,0 +1,48 @@
+<%= form_with url: "/users/create_user", scope: @user do |form| %>
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+        <% @user.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :email %>
+    <%= form.email_field :email %>
+  </div>
+
+  
+  <div class="field">
+    <%= form.label :password, "Password *" %>
+    <%= form.password_field :password, autocomplete: "new-password" %>
+  </div>
+
+  <div class="field">
+    <%= form.label :password_confirmation, "Confirm Password *" %><br />
+    <%= form.password_field :password_confirmation, autocomplete: "new-password" %>
+  </div>
+  <% if current_user.present? && current_user.is_admin? %>
+  <div class="field">
+    <%= form.label :role %>
+    <%= form.select :role, User::ROLE %>
+  </div>
+  <% end %> 
+
+  <%= form.fields_for :address do |f| %>
+    <%= render 'addresses/address', form: f %>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
