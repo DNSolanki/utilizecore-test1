@@ -1,14 +1,11 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
+  before_action :authorize_user!
   before_action :set_user, only: %i[ show edit update destroy ]
 
   # GET /users or /users.json
   def index
-    if current_user.present? && current_user.is_admin?
-      @users = User.all
-    else
-      @users = User.where(id: current_user.id).or(User.where(created_by: current_user.id))
-    end
+    @users = User.all
   end
 
   # GET /users/1 or /users/1.json

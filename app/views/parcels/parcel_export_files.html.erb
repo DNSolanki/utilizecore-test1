@@ -8,6 +8,7 @@
   <thead>
     <tr>
       <th>Number</th>
+      <th>Created At</th>
       <th>File</th>
       
     </tr>
@@ -18,8 +19,8 @@
       <% @contains.each.with_index(1)  do |file, index| %>
         <tr>
           <td><%= index %></td>
-
-            <td><%= link_to file, "parcel_export_files?file_name=#{file}" %></td>
+          <td><%= file_date_format(file) %></td>
+          <td><%= link_to file, "parcel_export_files?file_name=#{file}" %></td>
           
         </tr>
       <% end %>

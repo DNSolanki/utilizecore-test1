@@ -19,9 +19,6 @@
 
 # Learn more: http://github.com/javan/whenever
 
-every 1.minute do
-	rake "parcel_report:export_report"
-end
 
 every :day, at: '12:00 am' do
 	rake "parcel_report:export_report"

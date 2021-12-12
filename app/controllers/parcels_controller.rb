@@ -1,5 +1,6 @@
 class ParcelsController < ApplicationController
   before_action :authenticate_user!, :except => [:export_parcel_report]
+  before_action :authorize_user!, only: %i[change_status update_status parcel_export_files]
   before_action :set_parcel, only: %i[ show edit update destroy change_status update_status]
   before_action :get_users, :service_type, only: %i[ new edit]
   
@@ -14,18 +15,17 @@ class ParcelsController < ApplicationController
     if current_user.present? && current_user.is_admin?
       @parcels = Parcel.order(id: :desc).includes(:sender, :receiver, :service_type)
     else
-      @parcels = Parcel.where(sender_id: current_user.id).or(Parcel.where(receiver_id: current_user.id)).or(Parcel.where(created_by: current_user.id)).order(id: :desc).includes(:sender, :receiver, :service_type)
+      @parcels = Parcel.where(sender_id: current_user.id).or(Parcel.where(receiver_id: current_user.id)).order(id: :desc).includes(:sender, :receiver, :service_type)
     end
 
     # Download export parcel list
     if (params[:format] == 'xlsx')
 
-      file_name = Time.now.to_i
-      xlsx = render_to_string layout: false, handlers: [:axlsx], formats: [:xlsx], template: 'parcels/index.xlsx.axlsx', locals: {parcels: @parcels}
-      
-      File.open("public/orders_exported/parcel_report_#{file_name}.xlsx", 'w') do |file|
-        file.write(xlsx)
+      respond_to do |format|
+        format.html
+        format.xlsx{render xlsx: 'parcel_report', template: 'parcels/index',filename: 'Parcel Report'}
       end
+     
     
     end
     
@@ -132,7 +132,7 @@ class ParcelsController < ApplicationController
 
   # Maintain Parcel History list
   def history
-    @parcel_history = ParcelHistory.joins(:parcel).select('parcel_histories.*', 'parcels.parcel_number').where(parcel_id: params[:id]).order(id: :desc)
+    @parcel_history = ParcelHistory.joins(:parcel).select('parcel_histories.*', 'parcels.parcel_number').where(parcel_id: params[:id]).order(id: :asc)
   end 
 
   # Parcel report generated everyday 12:00 am by using rake task and whenever gem
@@ -166,7 +166,7 @@ class ParcelsController < ApplicationController
       if current_user.present? && current_user.is_admin?
         user_record = User.includes(:address)
       else
-        user_record = User.where(id: current_user.id).or(User.where(created_by: current_user.id)).includes(:address)
+        user_record = User.where.not(id: current_user.id).includes(:address)
       end
       
       @users = user_record.map{|user| [user.name_with_address, user.id]}

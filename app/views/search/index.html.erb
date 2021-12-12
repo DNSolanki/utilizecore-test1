@@ -13,6 +13,7 @@
   <thead>
     <tr>
       <th>Parcel Number</th>
+      <th>Created At</th>
       <th>Status</th>
     </tr>
   </thead>
@@ -21,6 +22,7 @@
     <% @parcels.each do |parcel| %>
       <tr>
         <td><%= parcel.parcel_number %></td>
+        <td><%= date_format(parcel.created_at) %></td>
         <td><%= parcel.status %></td>
       </tr>
     <% end %>

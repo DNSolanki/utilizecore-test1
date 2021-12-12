@@ -31,16 +31,30 @@
     <%= form.select :payment_mode, Parcel::PAYMENT_MODE, {:include_blank => 'select a payment mode'} %>
   </div>
 
-  <div class="field">
-    <%= form.label :sender_id, 'Sender *' %>
-    <%= form.select :sender_id, @users, {:include_blank => 'select a sender'} %>
-    <%= link_to 'New Sender', new_user_path %>
-  </div>
+  <% if current_user.present? && current_user.is_admin? %>
+    <div class="field">
+      <%= form.label :sender_id, 'Sender *' %>
+      <%= form.select :sender_id, @users, {:include_blank => 'select a sender'} %>
+      <% if current_user.present? && current_user.is_admin? %>
+        <%= link_to 'New Sender', new_user_path %>
+      <% end %>
+    </div>
+  <% else %>
+      <%= form.hidden_field :sender_id, value: current_user.id %>
+      <div class="field">
+        <%= form.label :sender_id %>
+        <%= form.text_field :sender_id, value: current_user.name_with_address, disabled: true %>
+      </div>
+      
+  <% end %>
+  
 
   <div class="field">
     <%= form.label :receiver_id, 'Receiver *' %>
     <%= form.select :receiver_id, @users, {:include_blank => 'select a receiver'}%>
-    <%= link_to 'New Receiver', new_user_path %>
+    <% if current_user.present? && current_user.is_admin? %>
+      <%= link_to 'New Receiver', new_user_path %>
+    <% end %>
   </div>
 
   <div class="field">

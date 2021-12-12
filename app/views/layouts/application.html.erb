@@ -18,9 +18,9 @@
         <li><a href="/search">Search Orders</a></li>
         <li><a href="/parcels">Parcels</a></li>
         <% if current_user.present? && current_user.is_admin? %>
-        <li><a href="/parcel_export_files">Export Excels</a></li>
-        <% end %>
+        <li><a href="/parcel_export_files">Schedule Reports</a></li>
         <li><a href="/users">Manage Users</a></li> 
+        <% end %>
         <li><a href="/service_types">Service Types</a></li>
         <li><%= link_to 'Sign out', destroy_user_session_path , method: :delete %></li>
       <% else %>
